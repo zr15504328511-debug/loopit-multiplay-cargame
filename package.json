@@ -1,0 +1,14 @@
+{
+  "name": "loopit-multiplay-cargame",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Browser slingshot racing with a driveable lobby and local AI players",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node tools/server.mjs",
+    "check": "node tools/test.mjs",
+    "test": "node tools/test.mjs",
+    "verify:assets": "node tools/verify-assets.mjs"
+  }
+}

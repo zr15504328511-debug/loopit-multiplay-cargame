@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+    />
+    <meta name="theme-color" content="#172d29" />
+    <link rel="icon" href="data:," />
+    <title>Sling Club · AI Room Demo</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="stylesheet" href="/src/stage.css" />
+    <link rel="stylesheet" href="/src/room-ui.css" />
+    <link rel="stylesheet" href="/src/room-world.css" />
+  </head>
+  <body>
+    <div class="stage" id="stage">
+      <canvas
+        id="game"
+        width="400"
+        height="580"
+        aria-label="Loopit car game"
+      ></canvas>
+      <div id="loading">
+        <img
+          class="native-launch-image"
+          src="/assets/native-ui/LaunchImage-155.png"
+          alt=""
+        />
+        <p id="load-text">Loading…</p>
+        <div class="load-line"><i></i></div>
+        <small class="load-error"></small>
+      </div>
+      <div id="interface" hidden>
+        <header>
+          <button
+            id="world-button"
+            class="brand"
+            aria-label="Select Level"
+            hidden
+          >
+            Loopit Car Game
+          </button>
+          <div class="wallet" aria-label="Coins">
+            <img src="/assets/native-ui/sprites_0-3.png" alt="Coins" /><b
+              id="coins"
+              >0</b
+            >
+          </div>
+          <div id="mode-label" aria-live="polite"></div>
+          <div class="top-actions">
+            <button
+              class="icon-button"
+              id="sound-button"
+              aria-label="Sound"
+              title="Sound"
+            >
+              ♪
+            </button>
+            <button
+              class="icon-button"
+              id="pause-button"
+              aria-label="Settings & Controls"
+              title="Settings & Controls"
+            >
+              <img src="/assets/native-ui/settings-188.png" alt="" />
+            </button>
+          </div>
+          <div class="journey">
+            <div class="native-status-text">
+              <span id="level-label"></span><b id="phase-label"></b
+              ><span id="distance-label"></span>
+            </div>
+            <div class="progress"><i id="progress-fill"></i></div>
+            <img
+              class="finish-marker"
+              src="/assets/native-ui/finish-197.png"
+              alt="Finish"
+            />
+          </div>
+        </header>
+        <div id="level-badge">
+          <h1 id="level-title" hidden></h1>
+          <p id="level-description" hidden></p>
+          <button
+            id="map-button"
+            class="aux-button"
+            title="Select Level"
+            aria-label="Select Level"
+          >
+            ⌖
+          </button>
+        </div>
+        <div id="aim-ui" hidden>
+          <img
+            class="native-hand"
+            src="/assets/native-ui/hand_small_open-204.png"
+            alt="Pull back and release"
+          />
+          <div class="power-meter"><i id="power-fill"></i></div>
+          <b id="power-label">0%</b>
+        </div>
+        <div id="run-feedback" aria-live="polite"></div>
+        <aside id="telemetry" hidden>
+          <div class="native-speed-ring"></div>
+          <div class="native-speed-fill"></div>
+          <div class="speed"><b id="speed">0</b><span>km/h</span></div>
+          <p class="coast-status" id="coast-status" hidden></p>
+          <div class="energy-label" hidden><b id="energy-value">100%</b></div>
+          <div class="energy-meter" hidden><i id="energy-fill"></i></div>
+          <p hidden><span id="surface"></span><span id="altitude"></span></p>
+          <div class="condition" hidden>
+            <div class="health"><i id="health-fill"></i></div>
+          </div>
+          <div id="run-coins" hidden></div>
+        </aside>
+        <div id="garage">
+          <div class="garage-heading">
+            <h2 id="car-title" hidden></h2>
+            <button
+              id="car-button"
+              class="aux-button"
+              aria-label="Select Car"
+              title="Select Car"
+            >
+              <img src="/assets/native-ui/car-178.png" alt="" />
+            </button>
+          </div>
+          <div class="upgrade-row">
+            <button
+              class="upgrade"
+              data-upgrade="sling"
+              aria-label="Upgrade Slingshot"
+            >
+              <span class="upgrade-title">Slingshot</span
+              ><img
+                class="upgrade-icon"
+                src="/assets/native-ui/slingshot-187.png"
+                alt=""
+              />
+              <span class="upgrade-level" data-native-level="sling">1</span
+              ><span
+                class="upgrade-pips"
+                data-native-pips="sling"
+                aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i
+              ></span>
+              <span class="upgrade-buy"
+                ><strong>Upgrade</strong><b id="sling-price">30</b></span
+              ><small id="sling-upgrade-desc" hidden></small>
+            </button>
+            <button class="upgrade" data-upgrade="car" aria-label="Upgrade Car">
+              <span class="upgrade-title">Car</span
+              ><img
+                class="upgrade-icon"
+                src="/assets/native-ui/car-178.png"
+                alt=""
+              />
+              <span class="upgrade-level" data-native-level="car">1</span
+              ><span
+                class="upgrade-pips"
+                data-native-pips="car"
+                aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i
+              ></span>
+              <span class="upgrade-buy"
+                ><strong>Upgrade</strong><b id="car-price">30</b></span
+              ><small id="car-upgrade-desc" hidden></small>
+            </button>
+            <button
+              class="upgrade"
+              data-upgrade="income"
+              aria-label="Upgrade Income"
+            >
+              <span class="upgrade-title">Income</span
+              ><img
+                class="upgrade-icon"
+                src="/assets/native-ui/income1-179.png"
+                alt=""
+              /><span id="native-income-multiplier">x1</span>
+              <span class="upgrade-level" data-native-level="income">1</span
+              ><span
+                class="upgrade-pips"
+                data-native-pips="income"
+                aria-hidden="true"
+                ><i></i><i></i><i></i><i></i><i></i
+              ></span>
+              <span class="upgrade-buy"
+                ><strong>Upgrade</strong><b id="income-price">30</b></span
+              ><small id="income-upgrade-desc" hidden></small>
+            </button>
+          </div>
+          <button
+            id="launch-button"
+            aria-label="Pull back and release to launch"
+          >
+            Tap To Start
+          </button>
+        </div>
+        <div id="flight-controls" hidden>
+          <button class="touch-steer" id="left-control" aria-label="Steer left">
+            ‹
+          </button>
+          <div class="flight-middle">
+            <button id="item-button" class="item-button" disabled>
+              <span id="item-icon">◇</span><b id="item-name">Item</b
+              ><small id="item-key">SPACE</small>
+            </button>
+          </div>
+          <button
+            class="touch-steer"
+            id="right-control"
+            aria-label="Steer right"
+          >
+            ›
+          </button>
+        </div>
+        <div id="footer-note" hidden></div>
+      </div>
+      <div id="modal" class="modal" hidden>
+        <div class="modal-card" id="modal-card"></div>
+      </div>
+      <div id="toast" role="status"></div>
+    </div>
+    <script type="module" src="/src/native-ui.js"></script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

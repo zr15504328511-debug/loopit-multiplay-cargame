@@ -1,0 +1,637 @@
+/* Original CanvasScaler reference 360x840, matchHeight=1: scale=580/840.
+   Rect evidence: output/native-ui/hierarchy.json; stage remains 400x580. */
+.stage {
+  position: absolute;
+  width: 400px;
+  height: 580px;
+  left: 50%;
+  top: 50%;
+  overflow: hidden;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  background: #c6deda;
+  box-shadow: 0 18px 80px #07181277;
+}
+#game {
+  width: 400px;
+  height: 580px;
+  display: block;
+  touch-action: none;
+}
+#interface {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+#interface button {
+  pointer-events: auto;
+}
+header {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.wallet {
+  position: absolute;
+  top: 45.57px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 73.19px;
+  height: 24.86px;
+  background: #414141a0;
+  border-radius: 10.36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 20px;
+  color: #fff;
+}
+.wallet img {
+  position: absolute;
+  left: 2.56px;
+  top: -4.14px;
+  width: 26.24px;
+  height: 26.24px;
+  object-fit: contain;
+}
+.wallet b {
+  font-size: 17.95px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 1px 1px #333;
+}
+.top-actions {
+  position: absolute;
+  right: 12px;
+  top: 13px;
+  display: flex;
+  gap: 7px;
+}
+.icon-button,
+.aux-button {
+  display: grid;
+  place-items: center;
+  width: 27.62px;
+  height: 27.62px;
+  padding: 3px;
+  background: #16272755;
+  color: white;
+  border-radius: 7px;
+  font:
+    20px Arial,
+    sans-serif;
+  filter: drop-shadow(0 1px 1px #18322b44);
+}
+.icon-button img,
+.aux-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+#sound-button {
+  font-size: 17px;
+}
+#level-badge {
+  position: absolute;
+  left: 12px;
+  top: 13px;
+}
+.garage-heading {
+  position: absolute;
+  left: 46px;
+  top: 13px;
+}
+.garage-heading .aux-button {
+  overflow: hidden;
+}
+.garage-heading .aux-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.journey {
+  display: none;
+  position: absolute;
+  right: 21.4px;
+  top: 201.62px;
+  width: 12.43px;
+  height: 176.76px;
+}
+body.flight .journey {
+  display: block;
+}
+.native-status-text {
+  display: none;
+}
+.progress {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 176.76px;
+  height: 12.43px;
+  padding: 1.38px;
+  background: #0008;
+  border-radius: 6px;
+  transform-origin: 0 0;
+  transform: rotate(-90deg);
+  overflow: hidden;
+}
+.progress i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(#00b3ff, #02b3ff);
+  border-radius: 5px;
+  box-shadow: inset 0 1px #7ddaff;
+}
+.finish-marker {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  left: -6px;
+  top: -26px;
+  filter: drop-shadow(0 1px 1px #0008);
+}
+#garage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.upgrade-row {
+  position: absolute;
+  left: 50%;
+  bottom: 23.48px;
+  width: 236.14px;
+  height: 146.38px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4.14px;
+  pointer-events: none;
+}
+.upgrade {
+  position: relative;
+  flex: 0 0 75.95px;
+  height: 146.38px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  color: white;
+  overflow: visible;
+  transition: transform 0.12s;
+}
+.upgrade::before {
+  content: "";
+  position: absolute;
+  inset: 1.38px;
+  background: url("/assets/native-ui/upgrade-background.png") center/100% 100%
+    no-repeat;
+  z-index: 0;
+}
+.upgrade:hover {
+  transform: translateY(-1px);
+}
+.upgrade:active {
+  transform: scale(0.96);
+}
+.upgrade:disabled {
+  opacity: 1;
+}
+.upgrade-title {
+  position: absolute;
+  left: 1.38px;
+  right: 1.38px;
+  top: 1px;
+  height: 23.86px;
+  padding: 4px 8px 0;
+  background: #6f7e82;
+  border-radius: 8px 8px 0 0;
+  text-align: left;
+  font-size: 11.05px;
+  font-weight: 400;
+  z-index: 2;
+  line-height: 15px;
+  text-shadow: 0 1px 1px #263e44;
+}
+img.upgrade-icon {
+  position: absolute;
+  left: 0.69px;
+  top: 17.95px;
+  width: 74.57px;
+  height: 74.57px;
+  object-fit: fill;
+  border-radius: 0 0 6px 6px;
+  z-index: 2;
+}
+.upgrade-level {
+  position: absolute;
+  right: -4.83px;
+  top: -6.21px;
+  display: grid;
+  place-items: center;
+  width: 20.71px;
+  height: 20.71px;
+  background: #fff;
+  border-radius: 50%;
+  font-size: 12.43px;
+  color: #111;
+  text-shadow: none;
+  z-index: 3;
+  box-shadow: 0 1px 1px #0002;
+}
+.upgrade-pips {
+  position: absolute;
+  left: 4.83px;
+  right: 4.83px;
+  top: 91.9px;
+  height: 13.81px;
+  display: flex;
+  gap: 1.5px;
+  z-index: 3;
+  padding: 1.5px 0;
+}
+.upgrade-pips i {
+  flex: 1;
+  background: #dbdbdb;
+  border-radius: 3px;
+  box-shadow: inset 0 -1px #92929245;
+}
+.upgrade-pips i.filled {
+  background: linear-gradient(#00deff, #00b7ff);
+  box-shadow:
+    inset 0 1px #b6f6ff,
+    inset 0 -1px #0087b9;
+}
+.upgrade-buy {
+  position: absolute;
+  left: 3.45px;
+  bottom: 3.24px;
+  width: 69.05px;
+  height: 35.9px;
+  background: url("/assets/native-ui/button-blue.png") center/100% 100%
+    no-repeat;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.upgrade-buy strong {
+  font-size: 11.05px;
+  font-weight: 400;
+  margin-bottom: 2px;
+  text-shadow: 0 1px 1px #0005;
+}
+.upgrade-buy b {
+  font-size: 15.19px;
+  font-weight: 400;
+  white-space: nowrap;
+  text-shadow: 0 1px 1px #0005;
+}
+.upgrade-buy b::after {
+  content: "";
+  display: inline-block;
+  margin-left: 3px;
+  vertical-align: -1px;
+  width: 11px;
+  height: 11px;
+  background: url("/assets/native-ui/sprites_0-3.png") center/contain no-repeat;
+}
+.upgrade:disabled .upgrade-buy b::after {
+  display: none;
+}
+.upgrade.unaffordable .upgrade-buy,
+.upgrade:disabled .upgrade-buy {
+  background-image: url("/assets/native-ui/button-greyed.png");
+}
+#native-income-multiplier {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 41px;
+  font-size: 24.86px;
+  color: #ffd100;
+  text-shadow: 0 1px 1px #6b4100;
+  z-index: 3;
+  text-align: center;
+}
+#launch-button {
+  position: absolute;
+  top: 350.76px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 330px;
+  height: 39px;
+  background: none;
+  color: #fff;
+  padding: 0;
+  font-size: 20.71px;
+  font-weight: 400;
+  line-height: 1;
+  text-shadow: 0 1.3px 1px #122c3c;
+  -webkit-text-stroke: 0.3px #25333a;
+}
+#aim-ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.native-hand {
+  position: absolute;
+  left: 182.05px;
+  top: 272.05px;
+  width: 35.9px;
+  height: 35.9px;
+  object-fit: contain;
+  animation: native-drag 2.5s ease-in-out infinite;
+  filter: drop-shadow(0 1px 1px #0005);
+}
+@keyframes native-drag {
+  0%,
+  10% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  65%,
+  80% {
+    transform: translateY(70px);
+    opacity: 1;
+  }
+  90%,
+  100% {
+    transform: translateY(70px);
+    opacity: 0;
+  }
+}
+.power-meter {
+  position: absolute;
+  left: 160px;
+  bottom: 72px;
+  width: 80px;
+  height: 7px;
+  background: #0005;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.power-meter i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: #00deff;
+}
+#power-label {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  bottom: 49px;
+  text-align: center;
+  color: #fff;
+  font:
+    11px Arial,
+    sans-serif;
+  text-shadow: 0 1px 2px #0008;
+}
+#telemetry {
+  position: absolute;
+  left: 15.19px;
+  bottom: 158.81px;
+  width: 69.05px;
+  height: 69.05px;
+  pointer-events: none;
+  color: #fff;
+}
+.native-speed-ring,
+.native-speed-fill {
+  position: absolute;
+  inset: 0;
+  -webkit-mask: url("/assets/native-ui/speedometer_ring-174.png") center/contain
+    no-repeat;
+  mask: url("/assets/native-ui/speedometer_ring-174.png") center/contain
+    no-repeat;
+  transform: rotate(-45deg);
+}
+.native-speed-ring {
+  background: conic-gradient(#0008 0deg 270deg, transparent 270deg);
+}
+.native-speed-fill {
+  background: conic-gradient(
+    #00b3ff 0deg var(--speed-angle, 0deg),
+    transparent var(--speed-angle, 0deg)
+  );
+}
+.speed {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-shadow: 0 1px 1px #0008;
+}
+.speed b {
+  font-size: 22.1px;
+  font-weight: 400;
+  line-height: 1;
+}
+.speed span {
+  position: absolute;
+  top: 49px;
+  font-size: 11.05px;
+  line-height: 1;
+}
+#run-feedback {
+  position: absolute;
+  top: 135px;
+  left: 25px;
+  right: 25px;
+  text-align: center;
+  color: #ffd100;
+  font-size: 18px;
+  text-shadow: 0 2px 2px #0007;
+  pointer-events: none;
+}
+#mode-label {
+  position: absolute;
+  top: 76px;
+  left: 70px;
+  right: 70px;
+  text-align: center;
+  font:
+    10px Arial,
+    sans-serif;
+  color: #fff;
+  text-shadow: 0 1px 2px #000b;
+}
+.mode-actions {
+  margin: 0 0 14px;
+}
+.level-card:disabled {
+  opacity: 0.58;
+}
+#flight-controls {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+.touch-steer {
+  width: 40px;
+  height: 40px;
+  background: #0002;
+  border: 1px solid #ffffff70;
+  border-radius: 50%;
+  color: #fff;
+  font:
+    30px Arial,
+    sans-serif;
+  opacity: 0.7;
+}
+.flight-middle {
+  display: flex;
+  justify-content: center;
+}
+.item-button {
+  width: 58px;
+  min-height: 58px;
+  padding: 4px;
+  background: url("/assets/native-ui/button-blue.png") center/100% 100%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 1px;
+  border-radius: 10px;
+}
+.item-button:disabled {
+  visibility: hidden;
+}
+#item-icon {
+  font:
+    24px Arial,
+    sans-serif;
+}
+#item-name {
+  font:
+    9px Arial,
+    "Microsoft YaHei",
+    sans-serif;
+}
+#item-key {
+  font:
+    7px Arial,
+    sans-serif;
+  opacity: 0.8;
+}
+#loading {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.native-launch-image {
+  width: 400px;
+  height: 580px;
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+}
+#load-text {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 28px;
+  text-align: center;
+  font:
+    12px Arial,
+    sans-serif;
+  color: #fff;
+  text-shadow: 0 1px 2px #000;
+}
+.load-error {
+  position: absolute;
+  left: 15px;
+  right: 15px;
+  bottom: 8px;
+  font:
+    10px Arial,
+    sans-serif;
+  color: #fff;
+  text-align: center;
+  text-shadow: 0 1px 2px #000;
+}
+.load-line {
+  position: absolute;
+  bottom: 22px;
+  left: 125px;
+  width: 150px;
+  height: 3px;
+  background: #ffffff55;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.load-line i {
+  display: block;
+  width: 45%;
+  height: 100%;
+  background: #fff;
+  animation: loading 1s linear infinite;
+}
+@keyframes loading {
+  from {
+    transform: translateX(-150%);
+  }
+  to {
+    transform: translateX(350%);
+  }
+}
+#toast {
+  position: absolute;
+  z-index: 60;
+  left: 50%;
+  bottom: 14px;
+  transform: translate(-50%, 12px);
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #152c2eef;
+  color: white;
+  font:
+    11px/1.5 Arial,
+    "Microsoft YaHei",
+    sans-serif;
+  text-align: center;
+  width: max-content;
+  max-width: 370px;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.2s;
+}
+#toast.show {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.campaign-next-note {
+  position: absolute;
+  top: 425px;
+  left: 48px;
+  width: 304px;
+  margin: 0;
+  color: white;
+  font: 12px/1.3 Arial, sans-serif;
+  text-align: center;
+  text-shadow: 0 1px 3px #17322b;
+}

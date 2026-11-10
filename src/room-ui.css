@@ -1,0 +1,65 @@
+.room-ui {position:absolute;inset:0;z-index:30;pointer-events:none;font-family:NativeGame,Arial,sans-serif}
+.room-lobby,.room-flight {position:absolute;inset:0;pointer-events:none}
+.room-ui button,.room-ui input,.room-joystick {pointer-events:auto}
+.room-ui button {color:white;font:inherit}
+.room-settings-toggle {position:absolute;top:16px;right:15px;width:32px;height:32px;padding:2px;background:none;filter:drop-shadow(0 2px 0 #48657066)}
+.room-settings-toggle img {width:100%;height:100%;object-fit:contain}
+.room-settings-drawer {position:absolute;top:62px;right:15px;width:232px;padding:16px;border-radius:16px;background:#f7fafa;box-shadow:0 4px 0 #6f7e82;color:#6f7e82;pointer-events:auto}
+.room-settings-heading {display:flex;justify-content:space-between;align-items:center;font-size:23px;margin-bottom:14px}
+.room-settings-close {width:28px;height:28px;border-radius:50%;background:#00c9ff;font-size:23px!important;line-height:24px}
+.room-field {display:flex;align-items:center;justify-content:space-between;gap:10px;margin:12px 0;font-size:16px}
+.room-field input {width:120px;min-width:0;padding:7px 8px;border:2px solid #d5e7ed;border-radius:7px;background:white;font:16px NativeGame,Arial,sans-serif;color:#6f7e82;outline-color:#00c9ff}
+.room-field input[type=number] {width:65px}
+.room-item-list {display:flex;gap:8px;margin-top:16px}
+.room-item {display:flex;flex:1;flex-direction:column;align-items:center;gap:2px;height:68px;padding:7px 0;background:transparent url('/assets/native-ui/button-blue.png') center/100% 100% no-repeat;text-shadow:0 1px 2px #0085bf;font-size:14px!important}
+.room-item b {font-size:27px;line-height:29px}
+.room-item.selected {background-image:url('/assets/native-ui/button-green.png');text-shadow:0 1px 2px #009f75}
+.room-demo-note {margin:12px 0 0;text-align:center;font:13px NativeGame,Arial,sans-serif;color:#7e969e}
+.room-joystick {position:absolute;left:22px;bottom:30px;width:84px;height:84px;display:grid;place-items:center;border:3px solid #fff8;border-radius:50%;background:#ffffff1c;box-shadow:0 2px 2px #0002;touch-action:none}
+.room-joystick::before,.room-joystick::after {content:'';position:absolute;background:#fff5;border-radius:2px}
+.room-joystick::before {width:2px;height:58px}.room-joystick::after {height:2px;width:58px}
+.room-joystick-thumb {width:37px;height:37px;border:0;border-radius:50%;background:url('/assets/native-ui/joystick_background-193.png') center/contain no-repeat;opacity:.8;box-shadow:0 2px 2px #0002;z-index:1}
+.room-drive-hint {position:absolute;bottom:55px;left:126px;right:14px;text-align:center;color:#ffd100;font-size:18px;line-height:1.25;text-shadow:0 2px 0 #675517,0 0 4px #0004}
+.settings-open .room-joystick,.settings-open .room-drive-hint {visibility:hidden}
+.room-back {position:absolute;top:16px;left:15px;width:32px;height:32px;font-size:32px!important;line-height:23px;background:transparent url('/assets/native-ui/button-blue.png') center/100% 100% no-repeat}
+.room-records {position:absolute;top:170px;right:7px;width:18px;height:194px;pointer-events:none}
+.room-record-finish {position:absolute;top:-18px;right:1px;width:14px;height:14px;object-fit:contain}
+.room-records-track {position:absolute;right:1px;top:0;width:5px;height:176px;border:1px solid #fff;border-radius:4px;background:#0002;overflow:hidden}
+.room-records-fill {position:absolute;bottom:0;left:0;right:0;background:#ffd100}
+.room-records-markers {position:absolute;inset:0}
+.room-record-avatar {position:absolute;right:2px;width:11px;height:11px;padding:0;border:1px solid white;border-radius:50%;background:white;box-shadow:0 1px 2px #0004;overflow:hidden}
+.room-record-avatar img {width:100%;height:100%;display:block}
+.room-record-avatar.is-local {right:0;width:14px;height:14px;border:2px solid #ffd100!important}
+.room-record-tick {position:absolute;right:0;width:4px;height:2px;border-radius:1px;opacity:.7}
+.room-notice {position:absolute;top:78px;left:35px;right:35px;text-align:center;font-size:19px;color:#ffd100;text-shadow:0 2px 0 #5b511e,0 0 4px #0005}
+.room-portal-labels {position:absolute;inset:0;pointer-events:none;z-index:22;overflow:hidden}
+.room-portal-label {position:absolute;top:0;left:0;display:flex;align-items:center;gap:5px;color:#ffd100;font:17px/1.1 NativeGame,Arial,sans-serif;text-shadow:0 2px 0 #554724,0 0 3px #0006;white-space:nowrap}
+.room-portal-label img {width:13px;height:17px;object-fit:contain}.room-portal-label.locked {color:white}
+.room-wallet {position:absolute;top:18px;left:50%;transform:translateX(-50%);height:27px;min-width:85px;padding:3px 10px 3px 26px;background:#414141a0;border-radius:10px;text-align:center}
+.room-wallet img {position:absolute;width:29px;height:29px;left:-7px;top:-2px;object-fit:contain}.room-wallet b {font-size:18px;font-weight:400;text-shadow:0 1px 1px #333}
+.room-ranking-toggle {position:absolute;top:13px;left:15px;width:36px;height:36px;padding:4px;background:url('/assets/native-ui/button-blue.png') center/100% 100% no-repeat}.room-ranking-toggle svg {width:100%;height:100%}
+.room-upgrade-dock {position:absolute;left:124px;right:17px;bottom:24px;display:flex;gap:5px;height:106px}
+.room-upgrade {position:relative;flex:1;min-width:0;padding:0;background:url('/assets/native-ui/upgrade-background.png') center/100% 100% no-repeat;border-radius:8px;text-shadow:0 1px 1px #263e44}
+.room-upgrade-title {position:absolute;top:0;left:0;right:0;height:22px;background:#6f7e82;border-radius:7px 7px 0 0;font-size:12px;padding-top:4px;text-align:center}
+.room-upgrade-picture {position:absolute;top:20px;left:50%;transform:translateX(-50%);width:57px;height:57px;object-fit:contain}
+.room-upgrade-level {position:absolute;top:-7px;right:-3px;width:21px;height:21px;display:grid;place-items:center;border-radius:50%;background:white;color:#263e44;font:13px NativeGame,Arial,sans-serif;box-shadow:0 1px 2px #0003;text-shadow:none}
+.room-upgrade-price {position:absolute;left:3px;right:3px;bottom:3px;height:29px;display:flex;align-items:center;justify-content:center;gap:4px;background:url('/assets/native-ui/button-blue.png') center/100% 100% no-repeat}
+.room-upgrade-price b {font-size:16px;font-weight:400}.room-upgrade-price img {width:15px;height:15px;object-fit:contain}
+.room-upgrade:disabled .room-upgrade-price {background-image:url('/assets/native-ui/button-greyed.png')}.room-upgrade:not(:disabled):active {transform:scale(.96)}
+.room-drive-hint {bottom:132px;left:110px;right:16px;font-size:17px}
+.settings-open .room-upgrade-dock {visibility:hidden}
+.room-board-overlay {position:absolute;inset:0;background:#16374a66;z-index:4;pointer-events:auto;display:flex;align-items:center;justify-content:center}
+.room-board {width:350px;max-height:470px;padding:16px 15px 13px;background:#f7fafa;color:#6f7e82;border-radius:16px;box-shadow:0 5px 0 #6f7e82;display:flex;flex-direction:column;pointer-events:auto}
+.room-board-heading {display:flex;align-items:center;justify-content:space-between;font-size:25px;margin-bottom:12px}
+.room-board-maps {display:flex;justify-content:space-between;align-items:center;background:#00c7ff;border-radius:9px;color:white;min-height:35px;text-shadow:0 1px 2px #0085bf}
+.room-board-maps strong {font-size:18px;font-weight:400}.room-board-maps button {width:34px;height:35px;background:none;font-size:26px}
+.room-board-list {overflow-y:auto;overscroll-behavior:contain;min-height:0;max-height:325px;margin-top:10px;scrollbar-width:thin}
+.room-board-row {display:grid;grid-template-columns:23px 25px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:40px;padding:5px 7px;border-bottom:1px solid #e2eaee;color:#526e7b}
+.room-board-row.is-local {background:#fff2ba;border-radius:8px;color:#736020}.room-board-rank {font-size:16px;text-align:center;font-weight:400}
+.room-board-avatar {width:24px;height:24px;border:2px solid white;border-radius:50%}.room-board-name {font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room-board-distance {font-size:17px;font-weight:400;white-space:nowrap}.room-board-empty {font-size:19px;text-align:center;padding:40px 0;margin:0;color:#8ba0a9}
+.room-board-foot {font-size:13px;text-align:center;padding-top:10px;color:#8ba0a9}
+.room-car-names {position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:24}
+.room-car-name {position:absolute;top:0;left:0;max-width:110px;color:white;font:13px/16px NativeGame,'Microsoft YaHei',Arial,sans-serif;text-shadow:0 1px 2px #193326,0 0 3px #193326;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.room-car-name::before {content:'';display:inline-block;width:6px;height:6px;margin-right:4px;background:var(--player-color);border:1px solid white;border-radius:50%;vertical-align:1px}
+.room-car-name.is-local {color:#ffd100;font-size:14px}
