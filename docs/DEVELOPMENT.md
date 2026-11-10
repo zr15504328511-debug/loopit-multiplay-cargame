@@ -14,13 +14,13 @@
 | `src/room-ui.js` / `.css` | 升级、金币、排行榜、设置、摇杆和精简进度栏 |
 | `src/room-world.js` | 同场车辆和纪录旗帜 |
 | `src/room-vehicles.js` | 七车型的外观阶段、轮胎、颜色视图缓存 |
-| `src/room-progression.js` | 大厅金币、升级价格/上限、奖励、玩家车型与颜色 |
+| `src/room-progression.js` | 大厅存档迁移、各图升级、共享 Campaign 数据适配、玩家车型与颜色 |
 | `src/room-items.js` | 辣椒/滑翔翼的一次使用规则 |
 | `src/physics.js` / `src/progression.js` | 发射、惯性、重力、阻力与车辆属性 |
 | `src/ground-contact.js` / `src/mesh-contact.js` | 地面足迹与网格接触 |
 | `src/scene-collisions.js` | 静态、旋转场景物体的碰撞 |
 | `src/renderer.js` / `src/native-*.js` | WebGL、地形/材质、光照、阴影、UI 与配置数据 |
-| `src/save.js` / `src/campaign.js` | 独立单人模式的存档、购买和战役流程 |
+| `src/save.js` / `src/campaign.js` | 大厅/战役共享的价格、购买、收益和跨关计算；单人存档 |
 
 ## 资源
 
@@ -35,6 +35,9 @@
 - 大厅进度和单人模式分别存储，继续使用既有键名以兼容已经保存的浏览器进度。
 - 只有本人成功抵达当前地图终点才解锁下一图；AI 成绩、退出与失败不会解锁。
 - 自然结束奖励只发一次；主动返回大厅视为放弃，本次不给金币。
+- 升级和奖励直接调用共享 Campaign 函数，不在大厅重新维护一套公式。进入新解锁地图代替 Next：清当前计数、保留金币/总计数，弹弓保留不足五次的余数。
+- 已完成地图保留本轮自己的升级；五图完成后进入第一图开始下一轮，清金币/计数/解锁但保留历史纪录。这里的自由重访是大厅适配。
+- 大厅存档版本为 3，`garage.rules=1`。迁移前的旧 JSON 备份到 `car-evolve-local-room-v1-before-campaign-upgrades`，新档不发演示金币。
 - 排行榜只是当前本地房间的数据视图，切换排行页不会替代实体弹弓选图。
 
 ## 后续接入多人服务

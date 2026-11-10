@@ -41,7 +41,9 @@
 .room-upgrade-dock {position:absolute;left:124px;right:17px;bottom:24px;display:flex;gap:5px;height:106px}
 .room-upgrade {position:relative;flex:1;min-width:0;padding:0;background:url('/assets/native-ui/upgrade-background.png') center/100% 100% no-repeat;border-radius:8px;text-shadow:0 1px 1px #263e44}
 .room-upgrade-title {position:absolute;top:0;left:0;right:0;height:22px;background:#6f7e82;border-radius:7px 7px 0 0;font-size:12px;padding-top:4px;text-align:center}
-.room-upgrade-picture {position:absolute;top:20px;left:50%;transform:translateX(-50%);width:57px;height:57px;object-fit:contain}
+.room-upgrade-picture {position:absolute;top:22px;left:50%;transform:translateX(-50%);width:45px;height:45px;object-fit:contain}
+.room-upgrade-pips {position:absolute;top:67px;left:9px;right:9px;display:flex;gap:2px;height:5px}
+.room-upgrade-pips i {flex:1;background:#c2d5d6;border-radius:1px}.room-upgrade-pips i.filled {background:#16d58a}
 .room-upgrade-level {position:absolute;top:-7px;right:-3px;width:21px;height:21px;display:grid;place-items:center;border-radius:50%;background:white;color:#263e44;font:13px NativeGame,Arial,sans-serif;box-shadow:0 1px 2px #0003;text-shadow:none}
 .room-upgrade-price {position:absolute;left:3px;right:3px;bottom:3px;height:29px;display:flex;align-items:center;justify-content:center;gap:4px;background:url('/assets/native-ui/button-blue.png') center/100% 100% no-repeat}
 .room-upgrade-price b {font-size:16px;font-weight:400}.room-upgrade-price img {width:15px;height:15px;object-fit:contain}

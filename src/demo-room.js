@@ -1,8 +1,11 @@
 import { ROOM_ITEM_CHOICES, normalizeRoomItem } from './room-items.js';
-import {roomEconomy,roomBuild,roomUpgradePrice,roomFlightReward,roomIncome,roomVehicleIdentity,ROOM_UPGRADE_TYPES,ROOM_UPGRADE_LIMITS,ROOM_PLAYER_COLORS} from './room-progression.js';
+import {roomEconomy,roomProfile,enterRoomProgression,roomVehicleIdentity,ROOM_UPGRADE_TYPES,ROOM_PLAYER_COLORS,ROOM_ECONOMY_VERSION} from './room-progression.js';
+import {physicalUpgrades,totalUpgrades} from './campaign.js';
+import {purchaseUpgrade,upgradeCost,upgradeAvailable,incomeMultiplier,distanceReward} from './save.js';
 
 export const ROOM_CAPACITY = 20;
 export const ROOM_SAVE_KEY = 'car-evolve-local-room-v1';
+export const ROOM_ECONOMY_BACKUP_KEY = ROOM_SAVE_KEY+'-before-campaign-upgrades';
 const names = ['Mochi','Nova','Sunny','Pixel','Coco','Bolt','Luna','Echo','Milo','Pip','Comet','Kiwi','Rio','Bean','Dash','Maple','Ziggy','Otto','Skye'];
 const colors = ROOM_PLAYER_COLORS;
 const bounded = (value, min, max, fallback = min) => Number.isFinite(Number(value)) ? Math.max(min, Math.min(max, Number(value))) : fallback;
@@ -20,8 +23,9 @@ export class DemoRoom {
   constructor(maps, storage = null) {
     this.maps = maps;
     this.storage = storage;
-    let saved = {};
-    try { saved = JSON.parse(storage?.getItem(ROOM_SAVE_KEY) || '{}') || {}; } catch {}
+    let saved = {},raw=null;
+    try { raw=storage?.getItem(ROOM_SAVE_KEY);saved = JSON.parse(raw || '{}') || {}; } catch {}
+    this.legacyEconomyBackup=raw&&saved.garage?.rules!==ROOM_ECONOMY_VERSION?raw:null;
     this.name = cleanName(saved.name);
     this.count = Math.floor(bounded(saved.count,1,ROOM_CAPACITY,8));
     this.completed=[];
@@ -32,7 +36,7 @@ export class DemoRoom {
     this.mapId = this.isUnlocked(saved.mapId) ? saved.mapId : maps[0].id;
     this.selectedItem = normalizeRoomItem(saved.selectedItem);
     this.muted = !!saved.muted;
-    this.garage=roomEconomy(saved.garage);
+    this.garage=roomEconomy(saved.garage,maps,this.mapId,this.completed);
     this.records = {};
     for (const map of maps) {
       this.records[map.id] = {};
@@ -57,12 +61,14 @@ export class DemoRoom {
   isUnlocked(id) { const index=this.maps.findIndex(m=>m.id===id);return index>=0&&index<=this.completed.length; }
   get map() { return {...this.maps.find(m=>m.id===this.mapId),unlocked:true,completed:this.completed.includes(this.mapId)}; }
   get local() { return this.players[0]; }
-  get upgrades() {return roomBuild(this.garage.levels);}
+  get progression() {return roomProfile(this.garage,this.maps,this.mapId);}
+  get upgrades() {return physicalUpgrades(this.progression);}
+  get nextRoundReady() {return this.completed.length===this.maps.length;}
   buyUpgrade(type) {
     if(this.busy||this.local.status==='flying')return false;
-    const price=roomUpgradePrice(this.garage.levels,type);
-    if(price===null||this.garage.coins<price)return false;
-    this.garage.coins-=price;this.garage.levels[type]++;this.persist();return true;
+    const profile=this.progression;
+    if(!purchaseUpgrade(profile,type))return false;
+    this.garage.coins=profile.coins;this.persist();return true;
   }
   leaderboard(mapId=this.mapId) {
     if(!this.maps.some(m=>m.id===mapId))return [];
@@ -78,8 +84,9 @@ export class DemoRoom {
         distance:0,status:'ready',pose:null,run:null,round:0,participating:false};
     });
   }
-  enterMap(id, track, replays) {
+  enterMap(id, track, replays, {resume=false}={}) {
     if (!this.isUnlocked(id)) throw new Error('Finish the previous map to unlock this one.');
+    this.lastTransition=resume?{newRound:false,advanced:false}:enterRoomProgression(this.garage,this.maps,id,this.completed);
     this.mapId=id; this.track=track; this.replays=replays?.runs || [];
     this.players=[]; this.createPlayers(); this.lastRun=null; this.round=0; this.busy=false;
     this.persist();
@@ -93,8 +100,10 @@ export class DemoRoom {
   persist() {
     try {
       if(!this.storage)throw new Error('Storage unavailable');
-      this.storage.setItem(ROOM_SAVE_KEY,JSON.stringify({version:2,name:this.name,count:this.count,mapId:this.mapId,
+      if(this.legacyEconomyBackup&&!this.storage.getItem(ROOM_ECONOMY_BACKUP_KEY))this.storage.setItem(ROOM_ECONOMY_BACKUP_KEY,this.legacyEconomyBackup);
+      this.storage.setItem(ROOM_SAVE_KEY,JSON.stringify({version:3,name:this.name,count:this.count,mapId:this.mapId,
         selectedItem:this.selectedItem,muted:this.muted,records:this.records,completed:this.completed,garage:this.garage}));
+      this.legacyEconomyBackup=null;
       this.storageOK=true;
     } catch { this.storageOK=false; }
     this.dirty=false; this.saveClock=0;
@@ -126,14 +135,15 @@ export class DemoRoom {
     const cleared=success&&!abandoned&&sim.status==='success'&&sim.distance>=this.map.length-.1;
     this.lastRun={distance:this.local.distance,best:this.local.best,newRecord:this.local.best>(this.local.runStartBest||0)+.01,
       success:cleared,abandoned,elapsed:sim.elapsed};
-    this.lastRun.reward=abandoned?0:roomFlightReward(this.local.distance,cleared,this.garage.levels);
-    this.garage.coins=Math.min(100000000,this.garage.coins+this.lastRun.reward);
+    this.lastRun.reward=abandoned?0:distanceReward(this.progression,this.local.distance,cleared,this.track);
+    this.garage.coins=Math.min(Number.MAX_SAFE_INTEGER,this.garage.coins+this.lastRun.reward);
     if(this.local.pendingFlag) {this.local.flag=[...this.local.pendingFlag];this.local.flagDistance=this.local.best;this.local.pendingFlag=null;}
     if(cleared&&!this.completed.includes(this.mapId)) {
       const index=this.maps.findIndex(m=>m.id===this.mapId);
       if(index===this.completed.length) {
         this.completed.push(this.mapId);
         this.lastRun.unlocked=this.maps[index+1]?.title || null;
+        this.lastRun.nextRound=this.nextRoundReady;
       }
     }
     this.local.status='ready'; this.local.pose=null; this.persist();
@@ -180,9 +190,10 @@ export class DemoRoom {
     if(this.dirty && this.saveClock>2)this.persist();
   }
   snapshot() {
+    const profile=this.progression;
     return {map:this.map,maps:this.maps.map(m=>({...m,unlocked:this.isUnlocked(m.id),completed:this.completed.includes(m.id)})),players:this.players,capacity:ROOM_CAPACITY,localId:'you',
-      roomName:'The Launch Club',lastRun:this.lastRun,busy:this.busy,selectedItem:this.selectedItem,
-      coins:this.garage.coins,upgrades:ROOM_UPGRADE_TYPES.map(type=>({type,level:this.garage.levels[type]+1,max:this.garage.levels[type]>=ROOM_UPGRADE_LIMITS[type],price:roomUpgradePrice(this.garage.levels,type),income:type==='income'?roomIncome(this.garage.levels):null})),
+      roomName:'The Launch Club',lastRun:this.lastRun,busy:this.busy,selectedItem:this.selectedItem,nextRoundReady:this.nextRoundReady,
+      coins:this.garage.coins,upgrades:ROOM_UPGRADE_TYPES.map(type=>({type,level:totalUpgrades(profile,type)+1,step:(type==='car'?profile.upgrades.car:totalUpgrades(profile,type))%5,max:!upgradeAvailable(profile,type),price:upgradeCost(profile,type),income:type==='income'?incomeMultiplier(profile):null})),
       leaderboards:Object.fromEntries(this.maps.map(m=>[m.id,this.leaderboard(m.id)])),
       items:ROOM_ITEM_CHOICES,storageOK:this.storageOK!==false};
   }

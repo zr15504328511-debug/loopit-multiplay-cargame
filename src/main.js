@@ -328,7 +328,7 @@ async function loadLevel(id) {
   if(roomMode) {
     const response=await fetch(`/assets/room/replays/${level.id}.json`);
     if(!response.ok)throw new Error('AI room paths could not be loaded.');
-    room.enterMap(level.id,track,await response.json());
+    room.enterMap(level.id,track,await response.json(),{resume:loaded===0});
     roomLobby.resetMap();
   }
   const st = LEVEL_STYLE[level.id];
@@ -386,7 +386,11 @@ async function startRoomFlight(id=roomLobby?.nearPortal?.id) {
   if(!roomMode || state!=='lobby' || room.busy || !roomLobby.nearSling || id!==roomLobby.nearPortal?.id || !room.isUnlocked(id))return;
   audio.unlock();room.busy=true;roomLobby.entered=true;roomDrive={steer:0,throttle:0};
   try {
-    if(id!==level.id)await loadLevel(id);else reset();
+    if(id!==level.id)await loadLevel(id);
+    else {
+      if(room.nextRoundReady&&id===room.maps[0].id){room.enterMap(id,track,{runs:room.replays});roomLobby.resetMap();}
+      reset();
+    }
     roomLobby.entered=true;room.busy=false;
     setState('ready');roomUI.hideLobby();roomUI.setFlightVisible(true);roomUI.update(roomSnapshot());
     feedback('Pull back & release');
@@ -394,10 +398,11 @@ async function startRoomFlight(id=roomLobby?.nearPortal?.id) {
 }
 function returnToLobby() {
   if(!roomMode || state==='loading')return;
-  const unlocked=pendingRoomReturn&&room.lastRun?.unlocked,reward=pendingRoomReturn&&room.lastRun?.reward;
+  const unlocked=pendingRoomReturn&&room.lastRun?.unlocked,reward=pendingRoomReturn&&room.lastRun?.reward,nextRound=pendingRoomReturn&&room.lastRun?.nextRound;
   if(state==='running')room.finishLocal(sim,false,true);
   pendingRoomReturn=false;reset();
-  if(unlocked)roomUI.showNotice(`${unlocked} unlocked!`);
+  if(nextRound)roomUI.showNotice('Next round · Savannah');
+  else if(unlocked)roomUI.showNotice(`${unlocked} unlocked!`);
   else if(reward)roomUI.showNotice(`+${reward} coins`);
 }
 function buyRoomUpgrade(type) {
