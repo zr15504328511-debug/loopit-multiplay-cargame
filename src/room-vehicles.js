@@ -32,7 +32,7 @@ export class RoomVehicles {
       const root=model([pose.x,pose.y,pose.z],pose.yaw||0,pose.pitch||0,pose.roll||0);
       renderer.asset(this.body(player,tier),root);
       const wheel=entry.wheels.get(entry.stages[tier].wheelFile);
-      if(!wheel)continue;
+      if(!wheel||tier===0)continue;
       const roots=entry.info.wheelPositions.map(w=>mul(mul(root,trs(w.translation,w.rotation)),model([0,0,0],0,spin*(w.translation[0]>0?-1:1))));
       renderer.instances(wheel,roots);
     }

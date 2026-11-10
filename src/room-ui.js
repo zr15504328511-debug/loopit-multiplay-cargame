@@ -22,8 +22,10 @@ export function createRoomUI({stage,onCountChange=()=>{},onNameChange=()=>{},onI
   for(const [type,title,file] of [['sling','Slingshot','slingshot-187.png'],['car','Car','car-178.png'],['income','Income','income1-179.png']]) {
     const b=el('button','room-upgrade');b.type='button';b.dataset.roomUpgrade=type;b.setAttribute('aria-label',`Upgrade ${title}`);
     const level=el('i','room-upgrade-level','1'),price=el('span','room-upgrade-price'),amount=el('b');price.append(amount,icon('sprites_0-3.png'));
-    const picture=icon(file);picture.className='room-upgrade-picture';b.append(el('span','room-upgrade-title',title),picture,level,price);
-    b.onclick=()=>onUpgrade(type);upgrades.append(b);upgradeNodes.set(type,{button:b,level,amount,coin:price.lastElementChild});
+    const picture=icon(file);picture.className='room-upgrade-picture';
+    const pips=el('span','room-upgrade-pips');pips.setAttribute('aria-hidden','true');for(let i=0;i<5;i++)pips.append(el('i'));
+    b.append(el('span','room-upgrade-title',title),picture,pips,level,price);
+    b.onclick=()=>onUpgrade(type);upgrades.append(b);upgradeNodes.set(type,{button:b,level,amount,pips,coin:price.lastElementChild});
   }
   const drawer=el('section','room-settings-drawer');drawer.id='room-settings-drawer';drawer.hidden=true;
   const heading=el('div','room-settings-heading'),close=el('button','room-settings-close','×');close.type='button';close.setAttribute('aria-label','Close settings');
@@ -119,6 +121,7 @@ export function createRoomUI({stage,onCountChange=()=>{},onNameChange=()=>{},onI
       coins.textContent=Math.floor(data.coins||0).toLocaleString('en-US');
       for(const u of data.upgrades||[]) {
         const n=upgradeNodes.get(u.type);if(!n)continue;n.level.textContent=u.level;n.amount.textContent=u.max?'MAX':u.price;n.coin.hidden=u.max;
+        [...n.pips.children].forEach((pip,i)=>pip.classList.toggle('filled',i<=(u.step||0)));
         n.button.disabled=!!data.busy||u.max||data.coins<u.price;n.button.classList.toggle('is-max',u.max);
         n.button.title=u.type==='income'?`Income ×${Number(u.income).toFixed(1)}`:u.type==='car'?'Improve coasting and vehicle parts':'Increase launch strength';
       }
@@ -129,7 +132,7 @@ export function createRoomUI({stage,onCountChange=()=>{},onNameChange=()=>{},onI
       name.disabled=count.disabled=!!data.busy;
       if(data.moving){driven=true;hint.hidden=true;}
       if(data.nearPortal?.locked){hint.textContent='Locked';hint.hidden=false;}
-      else {hint.textContent='Drive to a slingshot';hint.hidden=driven;}
+      else {hint.textContent=data.nextRoundReady?'Next round · Savannah':'Drive to a slingshot';hint.hidden=driven&&!data.nextRoundReady;}
     }
     updateBoard();
     updateRail(data);
