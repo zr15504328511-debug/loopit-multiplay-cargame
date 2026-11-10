@@ -1,0 +1,35 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {DemoRoom,ROOM_SAVE_KEY} from '../src/demo-room.js';
+import {vehicleStats} from '../src/progression.js';
+import {roomFlightReward,roomVehicleIdentity,ROOM_UPGRADE_LIMITS} from '../src/room-progression.js';
+import {RoomVehicles} from '../src/room-vehicles.js';
+const memory=new Map(),storage={getItem:k=>memory.get(k),setItem:(k,v)=>memory.set(k,v)},maps=[{id:'a',title:'A',length:500},{id:'b',title:'B',length:300}];
+// Migrate an existing v2 room without erasing its records or completion.
+memory.set(ROOM_SAVE_KEY,JSON.stringify({name:'Pilot',count:20,completed:['a'],records:{a:{you:{best:120,position:[0,1,120]}}}}));
+const room=new DemoRoom(maps,storage);assert.equal(room.garage.coins,500);assert.equal(room.local.best,120);assert.deepEqual(room.completed,['a']);
+const before=vehicleStats(room.upgrades);
+assert.equal(room.buyUpgrade('car'),true);const car=vehicleStats(room.upgrades);
+assert.ok(car.groundDamping<before.groundDamping);assert.ok(car.sourceTier>before.sourceTier);assert.equal(room.garage.coins,420);
+assert.equal(room.buyUpgrade('sling'),true);assert.ok(vehicleStats(room.upgrades).springForce>car.springForce);
+assert.equal(room.buyUpgrade('income'),true);assert.ok(roomFlightReward(120,false,room.garage.levels)>roomFlightReward(120,false,{}));
+assert.equal(room.buyUpgrade('unknown'),false);room.garage.coins=0;assert.equal(room.buyUpgrade('car'),false);assert.equal(room.garage.coins,0);
+room.garage.coins=310;room.enterMap('a',{startZ:0,endZ:500},{runs:[]});room.beginLocal();assert.equal(room.buyUpgrade('car'),false,'Cannot spend during flight');
+const run={x:1,y:2,z:150,distance:150,elapsed:8,status:'stopped'};room.finishLocal(run,false);
+const paid=room.garage.coins;assert.equal(room.lastRun.reward,66);assert.equal(paid,376);
+room.finishLocal(run,false);assert.equal(room.garage.coins,paid,'A finish may only award once');
+room.beginLocal();room.finishLocal(run,false,true);assert.equal(room.garage.coins,paid,'Abandoning does not farm coins');
+const reload=new DemoRoom(maps,storage);assert.deepEqual(reload.garage,room.garage);assert.deepEqual(reload.upgrades,room.upgrades);assert.deepEqual(reload.completed,['a']);
+room.record(room.players[1],200,[0,1,200]);room.record(room.players[2],300,[0,1,300]);
+room.setName('<Pilot>');const board=room.leaderboard('a');
+assert.deepEqual(board.map(p=>p.best),[300,200,150]);assert.deepEqual(board.map(p=>p.rank),[1,2,3]);assert.equal(board.at(-1).name,'<Pilot>');
+assert.equal(room.leaderboard('b').length,0);assert.equal(room.leaderboard('unknown').length,0);assert.equal(room.mapId,'a');
+assert.equal(new Set(room.players.map(p=>`${p.carId}:${p.color}`)).size,20);assert.equal(new Set(room.players.map(p=>p.carId)).size,7);
+assert.deepEqual(room.players.map(p=>[p.carId,p.color]),new DemoRoom(maps,storage).players.map(p=>[p.carId,p.color]));
+room.garage.coins=1000000;for(const [type,limit] of Object.entries(ROOM_UPGRADE_LIMITS)){while(room.garage.levels[type]<limit)assert.equal(room.buyUpgrade(type),true);const balance=room.garage.coins;assert.equal(room.buyUpgrade(type),false);assert.equal(room.garage.coins,balance);}
+assert.deepEqual(room.upgrades,{car:25,sling:20,income:10},'Maximum flight build still matches validated replay routes');
+const fleet=new RoomVehicles(),material={name:'AFRC_Mat_Col1',color:[1,1,1,1]},source={draws:[{node:{index:1},material}]};
+fleet.models.set('sports',{asset:source,stages:Array.from({length:6},()=>({showNodes:[1]}))});
+const skin=fleet.body(roomVehicleIdentity(0),2);assert.ok(skin.draws[0].material.roomPaint);assert.equal(material.roomPaint,undefined);assert.notEqual(skin.draws[0].material,material);
+const result={passed:true,cases:['Existing records and unlocks survive economy migration','Car/sling purchases change real physics; income changes earnings','Insufficient funds, unknown type, active flight and caps reject purchases','Natural finish pays once; abandon pays zero','Coins and upgrades survive reload','Per-map rankings sort real records and exclude zero scores','Twenty stable color/model identities; seven original models','Cosmetic paint never mutates shared source materials']};
+fs.writeFileSync('output/room-progression-tests.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));

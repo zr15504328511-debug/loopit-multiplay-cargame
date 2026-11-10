@@ -1,0 +1,35 @@
+# Local dependencies, settings and credentials
+node_modules/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc
+.vscode/
+.idea/
+
+# Generated reports, browser profiles and local servers
+output/
+.playwright-cli/
+playwright-report/
+test-results/
+*.log
+*.pid
+*.tmp
+__pycache__/
+.DS_Store
+Thumbs.db
+
+# External packages and offline working material
+*.apk
+*.aab
+*.xapk
+*.ipa
+*.zip
+*.7z
+*.rar
+experiments/
+tools/python-vendor/
